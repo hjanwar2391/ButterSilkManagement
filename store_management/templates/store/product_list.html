@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h1>Product List</h1>
+<table>
+    <thead>
+        <tr>
+            <th>Store ID</th>
+            <th>Store Name</th>
+            <th>Product Name</th>
+            <th>Quantity</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for product in products %}
+        <tr>
+            <td>{{ product.store.store_id }}</td>
+            <td>{{ product.store.name }}</td>
+            <td>{{ product.name }}</td>
+            <td>{{ product.quantity }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<h2>Total Products by Store</h2>
+<table>
+    <thead>
+        <tr>
+            <th>Store ID</th>
+            <th>Store Name</th>
+            <th>Total Quantity</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for store_total in store_totals %}
+        <tr>
+            <td>{{ store_total.store__store_id }}</td>
+            <td>{{ store_total.store__name }}</td>
+            <td>{{ store_total.total_quantity }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock content %}

@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+
+{% load crispy_forms_tags %}
+
+{% block content %}
+
+<h4 class="text-center mt-5">Check Attendance for One Staff</h4>
+<form method="post" style="width: 40%; margin: auto;">
+    {% if messages %}
+    <div class="alert alert-danger">
+        <ul>
+            {% for message in messages %}
+            <li>{{ message }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+    {% csrf_token %}
+    {{ form|crispy }}
+    <button type="submit" class="btn btn-primary" style="width: 100%;"> Filter </button>
+</form>
+
+<hr>
+
+{% if staff %}
+<h6 class="text-center">Attendance for {{ staff.name }}
+    (ID: {{ staff.staff_id }}) in {{ form.cleaned_data.month|date:"F Y" }}
+</h6>
+<table class="table table-striped table-bordered" style="width: 60%; margin: auto;">
+    <thead class="text-center">
+        <tr>
+            <th>Date</th>
+            <th>Day</th>
+            <th>Status</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for date, status in attendance_dict.items %}
+        <tr>
+            <td>{{ date }}</td>
+            <td>{{ date|date:"l" }}</td> <!-- Display the day of the week -->
+
+            <td>{{ status|capfirst }}</td>
+        </tr>
+        {% endfor %}
+
+    </tbody>
+</table>
+<hr>
+<table class="table table-striped table-bordered" style="width: 70%; margin: auto;">
+    <thead>
+
+        <tr>
+            <th colspan="2">Total Present: {{ total_present_days }} Days</th>
+
+            <th colspan="3">Monthly Salary: {{ monthly_salary }} Tk</th>
+
+        </tr>
+        <tr>
+            <th colspan="3">Total Salary for Present Days: {{ total_salary_for_present_days }} Tk</th>
+        </tr>
+        <tr>
+            <th colspan="3">Runing Month Total Cash Taken: {{ total_cash_taken }} Tk</th>
+        </tr>
+        <tr>
+            <th colspan="3">Runing Month Remaining Salary: {{ remaining_salary }} Tk</th>
+        </tr>
+        <tr>
+            <th colspan="3">Previous Month Remaining Salary: {{ previous_remaining_salary }} Tk</th>
+        </tr>
+        <tr>
+            <th colspan="3">Combined Remaining Salary: {{ combined_remaining_salary }} Tk</th>
+        </tr>
+
+    </thead>
+</table>
+{% endif %}
+
+<br><br>
+
+{% endblock content %}

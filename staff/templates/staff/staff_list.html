@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+
+<h1 class="text-center mt-5">Staff List</h1>
+<hr>
+<table class="table table-striped table-bordered" style="width: 90%; margin: auto;">
+    <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Phone</th>
+        <th>Salary</th>
+        <th>Date Added</th>
+    </tr>
+    {% for staff in staff_members %}
+    <tr>
+        <td>{{ staff.staff_id }}</td>
+        <td>{{ staff.name }}</td>
+        <td>{{ staff.phone }}</td>
+        <td>{{ staff.salary }}</td>
+        <td>{{ staff.add_date }}</td>
+    </tr>
+    {% endfor %}
+</table>
+
+
+{% endblock content %}

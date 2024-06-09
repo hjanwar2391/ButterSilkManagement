@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+
+
+<h1 class="text-center mt mt-5">Add Today Sell </h1>
+<form method="post" style="width: 40%; margin: auto;">
+    {% if messages %}
+    <div>
+        {% for message in messages %}
+        <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}" role="alert">
+            {{ message }}
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+    {% csrf_token %}
+    {{ form|crispy }}
+    <button type="submit" class="btn btn-primary" style="width: 100%;">Add Today Sells </button>
+</form>
+
+{% endblock content %}

@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+
+<h1 class="text-center mt-5">Store List</h1>
+<hr>
+<table class="table table-striped table-bordered" style="width: 90%; margin: auto;">
+    <thead class="text-center">
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Adress</th>
+        </tr>
+    </thead>
+    <tbody class="text-center">
+        {% for store in number_of_store %}
+        <tr>
+            <td>{{ store.store_id }}</td>
+            <td>{{ store.name }}</td>
+            <td>{{ store.address }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+
+{% endblock content %}

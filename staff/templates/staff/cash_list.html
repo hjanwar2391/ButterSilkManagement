@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+
+<h1 class="text-center mt mt-5">Cash List</h1>
+<div style="width: 100%; margin: auto;">
+    <form method="get" style="width: 50%; margin: auto;">
+        {{form|crispy}}
+        <button type="submit" class="btn btn-primary" style="width: 100%;">Filter</button>
+    </form>
+</div>
+<hr>
+<table class="table table-striped table-bordered" style="width: 90%; margin: auto;">
+    <thead class="text-center">
+        <tr>
+            <th>Staff Name</th>
+            <th>Date</th>
+            <th>Amount</th>
+            <th>Description</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for cash in cash_entries %}
+        <tr>
+            <td>{{ cash.staff.name }}</td>
+            <td>{{ cash.date }}</td>
+            <td>{{ cash.amount }}</td>
+            <td>{{ cash.description }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% endblock content %}

@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags%}
+
+{% block content %}
+
+<h1 class="text-center mt mt-5">Attendance List</h1>
+<div style="width: 100%; margin: auto;">
+    <form method="get" style="width: 50%; margin: auto;">
+        {{form|crispy}}
+        <button type="submit" class="btn btn-primary" style="width: 100%;">Filter</button>
+    </form>
+</div>
+<hr>
+<table class="table table-striped table-bordered" style="width: 90%; margin: auto;">
+    <thead>
+        <tr>
+            <th>Staff Name</th>
+            <th>Date</th>
+            <th>Status</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for attendance in attendances %}
+        <tr>
+            <td>{{ attendance.staff.name }}</td>
+            <td>{{ attendance.date }}</td>
+            <td>{{ attendance.status }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% endblock content %}
