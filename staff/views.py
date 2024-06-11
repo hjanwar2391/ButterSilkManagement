@@ -10,17 +10,14 @@ from .forms import (
     CashFilterForm,
     LoginForm,
 )
-from django.db.models import Sum
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
-import datetime
-from django.utils import timezone
 from calendar import monthrange, FRIDAY
-from datetime import timedelta, datetime
+from datetime import timedelta, datetime, date
 import math
 from django.db import models
-from datetime import date
+from django.contrib.auth.decorators import login_required
 
 
 def home(request):
@@ -70,6 +67,7 @@ def attendance_list(request):
     )
 
 
+@login_required
 def one_staff_attendance(request):
     form = StaffIDForm()
     staff = None
@@ -107,14 +105,18 @@ def one_staff_attendance(request):
                 )
                 prev_days_in_month = (prev_month_end - prev_month_start).days + 1
                 prev_daily_salary = staff.salary / prev_days_in_month
-                prev_total_salary_for_present_days = math.ceil(prev_daily_salary * prev_total_present_days)
+                prev_total_salary_for_present_days = math.ceil(
+                    prev_daily_salary * prev_total_present_days
+                )
                 prev_total_cash_taken = (
                     Cash.objects.filter(
                         staff=staff, date__range=(prev_month_start, prev_month_end)
                     ).aggregate(total=models.Sum("amount"))["total"]
                     or 0
                 )
-                previous_remaining_salary = prev_total_salary_for_present_days - prev_total_cash_taken
+                previous_remaining_salary = (
+                    prev_total_salary_for_present_days - prev_total_cash_taken
+                )
 
                 # Calculate current month's attendance and salary
                 attendances = Attendance.objects.filter(
@@ -131,7 +133,9 @@ def one_staff_attendance(request):
                         attendance_dict[day] = "absent"
                         continue
 
-                    attendance = next((att for att in attendances if att.date == day), None)
+                    attendance = next(
+                        (att for att in attendances if att.date == day), None
+                    )
                     if attendance:
                         if day.weekday() == FRIDAY:
                             attendance.status = "present"
@@ -149,7 +153,9 @@ def one_staff_attendance(request):
 
                 days_in_month = (month_end - month_start).days + 1
                 daily_salary = staff.salary / days_in_month
-                total_salary_for_present_days = math.ceil(daily_salary * total_present_days)
+                total_salary_for_present_days = math.ceil(
+                    daily_salary * total_present_days
+                )
 
                 total_cash_taken = (
                     Cash.objects.filter(
@@ -162,7 +168,7 @@ def one_staff_attendance(request):
 
                 # Combine previous and current remaining salaries
                 combined_remaining_salary = previous_remaining_salary + remaining_salary
-                
+
             except Staff.DoesNotExist:
                 messages.error(request, "Invalid Staff ID. Please try again.")
 
@@ -182,6 +188,7 @@ def one_staff_attendance(request):
             "monthly_salary": monthly_salary,
         },
     )
+
 
 def add_cash(request):
     if request.method == "POST":
@@ -207,6 +214,7 @@ def cash_list(request):
     )
 
 
+@login_required
 def one_staff_cash(request):
     form = StaffCashForm()
     staff = None
@@ -244,6 +252,28 @@ def one_staff_cash(request):
     )
 
 
+@login_required
+def user_dashboard(request):
+    if request.user.is_superuser:
+        return render(request, "staff/home.html")
+    else:
+        try:
+            staff = Staff.objects.get(staff_id=request.user.username)
+            attendance = Attendance.objects.filter(staff=staff)
+            cash_transactions = Cash.objects.filter(staff=staff)
+            context = {
+                "staff": staff,
+                "attendance": attendance,
+                "cash_transactions": cash_transactions,
+            }
+            return render(request, "staff_desh_area/staff_dashboard.html", context)
+        except Staff.DoesNotExist:
+            return render(
+                request, "staff/error.html", {"message": "Staff record not found."}
+            )
+
+
+# admin are start here sir
 def register(request):
     if request.method == "POST":
         form = UserCreationForm(request.POST)
@@ -264,11 +294,12 @@ def login_view(request):
             user = authenticate(request, username=username, password=password)
             if user is not None:
                 login(request, user)
-                return redirect("home")  # Redirect to a success page.
+                return redirect("user_dashboard")
             else:
-                form.add_error(None, "Invalid username or password")
+                messages.error(request, "Invalid login Username/Password ")  # Error message
     else:
         form = LoginForm()
+
     return render(request, "staff/login.html", {"form": form})
 
 

@@ -3,13 +3,22 @@
 
 {% block content %}
 
-<h1 class="text-center mt mt-5" >Login area</h1>
+<h1 class="text-center mt mt-5">Login area</h1>
 <hr>
 
-<form method="post" style="width: 30%; margin: auto;">
+<form method="post" style="width: 40%; margin: auto;">
+    {% if messages %}
+    <div class="alert alert-danger">
+        <ul>
+            {% for message in messages %}
+            <li>{{ message }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
     {% csrf_token %}
     {{ form|crispy }}
-    <button type="submit" class="btn btn-primary"  style="width: 100%;">Login</button>
+    <button type="submit" class="btn btn-primary" style="width: 100%;"> Login </button>
 </form>
 
 {% endblock content %}

@@ -42,7 +42,6 @@ INSTALLED_APPS = [
     "cash_management",
     "crispy_forms",
     "crispy_bootstrap5",
-    
 ]
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
 
@@ -132,3 +131,8 @@ STATIC_URL = "static/"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
+# settings.py
+AUTHENTICATION_BACKENDS = [
+    "staff.auth_backend.StaffBackend",  # Reference to your custom backend
+    "django.contrib.auth.backends.ModelBackend",  # Default backend for superusers
+]
